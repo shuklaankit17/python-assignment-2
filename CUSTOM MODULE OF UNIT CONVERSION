@@ -1,0 +1,141 @@
+class UnitConverter:
+    @staticmethod
+    def length(value, from_unit, to_unit):
+        length_units = {
+            'meters': 1.0,
+            'kilometers': 0.001,
+            'miles': 0.000621371,
+            'feet': 3.28084,
+            'inches': 39.3701
+        }
+
+        if from_unit not in length_units or to_unit not in length_units:
+            raise ValueError("Unsupported length units")
+
+        base_value = value / length_units[from_unit]
+        return base_value * length_units[to_unit]
+
+    @staticmethod
+    def weight(value, from_unit, to_unit):
+        weight_units = {
+            'grams': 1.0,
+            'kilograms': 0.001,
+            'pounds': 0.00220462,
+            'ounces': 0.035274
+        }
+
+        if from_unit not in weight_units or to_unit not in weight_units:
+            raise ValueError("Unsupported weight units")
+
+        base_value = value / weight_units[from_unit]
+        return base_value * weight_units[to_unit]
+
+    @staticmethod
+    def temperature(value, from_unit, to_unit):
+        if from_unit == to_unit:
+            return value
+
+        if from_unit == "Celsius":
+            if to_unit == "Fahrenheit":
+                return value * 9/5 + 32
+            elif to_unit == "Kelvin":
+                return value + 273.15
+
+        if from_unit == "Fahrenheit":
+            if to_unit == "Celsius":
+                return (value - 32) * 5/9
+            elif to_unit == "Kelvin":
+                return (value - 32) * 5/9 + 273.15
+
+        if from_unit == "Kelvin":
+            if to_unit == "Celsius":
+                return value - 273.15
+            elif to_unit == "Fahrenheit":
+                return (value - 273.15) * 9/5 + 32
+
+        raise ValueError("Unsupported temperature units")
+
+    @staticmethod
+    def volume(value, from_unit, to_unit):
+        volume_units = {
+            'liters': 1.0,
+            'milliliters': 1000.0,
+            'gallons': 0.264172,
+            'cups': 4.22675
+        }
+
+        if from_unit not in volume_units or to_unit not in volume_units:
+            raise ValueError("Unsupported volume units")
+
+        base_value = value / volume_units[from_unit]
+        return base_value * volume_units[to_unit]
+
+
+def display_units(unit_type):
+    """
+    Dynamically display units based on the type of conversion.
+    """
+    if unit_type == "length":
+        return "meters, kilometers, miles, feet, inches"
+    elif unit_type == "weight":
+        return "grams, kilograms, pounds, ounces"
+    elif unit_type == "temperature":
+        return "Celsius, Fahrenheit, Kelvin"
+    elif unit_type == "volume":
+        return "liters, milliliters, gallons, cups"
+    else:
+        return ""
+
+
+def main():
+    print("\n*** Welcome to Unit Converter ***")
+    print("\nSelect the type of conversion:")
+    print("1. Length (e.g., meters to kilometers)")
+    print("2. Weight (e.g., grams to kilograms)")
+    print("3. Temperature (e.g., Celsius to Fahrenheit)")
+    print("4. Volume (e.g., liters to gallons)")
+
+    choice = input("\nEnter your choice (1-4): ").strip()
+
+    try:
+        if choice in ['1', '2', '3', '4']:
+            if choice == '1':
+                unit_type = "length"
+            elif choice == '2':
+                unit_type = "weight"
+            elif choice == '3':
+                unit_type = "temperature"
+            elif choice == '4':
+                unit_type = "volume"
+
+            print(f"\nYou selected {unit_type.capitalize()} conversion.")
+            print(f"Supported units: {display_units(unit_type)}\n")
+
+            value = float(input("Enter the value to convert: "))
+            from_unit = input(f"Enter the source unit from the above list: ").lower()
+            to_unit = input(f"Enter the target unit from the above list: ").lower()
+
+            if unit_type == "length":
+                result = UnitConverter.length(value, from_unit, to_unit)
+            elif unit_type == "weight":
+                result = UnitConverter.weight(value, from_unit, to_unit)
+            elif unit_type == "temperature":
+                result = UnitConverter.temperature(value, from_unit.capitalize(), to_unit.capitalize())
+            elif unit_type == "volume":
+                result = UnitConverter.volume(value, from_unit, to_unit)
+
+            print(f"\nResult: {value} {from_unit} is equivalent to {result:.2f} {to_unit}.\n")
+
+        else:
+            print("Invalid choice. Please enter a number between 1 and 4.")
+
+    except ValueError as e:
+        print(f"Error: {e}")
+    except KeyError:
+        print("Invalid unit. Please ensure the unit is from the supported list.")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
+
+
+if __name__ == "__main__":
+    main()
